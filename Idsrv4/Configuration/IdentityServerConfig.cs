@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using IdentityServer4.Models;
+using IdentityServer4.Test;
 
 namespace Idsrv4.Configuration
 {
@@ -40,5 +42,18 @@ namespace Idsrv4.Configuration
                 }
             };
         }
+
+		public static List<TestUser> GetUsers()
+		{
+			return new List<TestUser>
+			{
+				new TestUser
+				{
+					SubjectId = "1",
+					Username = "bob",
+					Password = "password"                   
+				}
+			};
+		}
     }
 }

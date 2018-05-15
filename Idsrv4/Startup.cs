@@ -27,6 +27,7 @@ namespace Idsrv4
             services.AddMvc();
 			services.AddIdentityServer()
 					.AddDeveloperSigningCredential()
+			        .AddTestUsers(IdentityServerConfig.GetUsers())
 					.AddInMemoryClients(IdentityServerConfig.GetClients())
 					.AddInMemoryApiResources(IdentityServerConfig.GetApiResources());
         }
@@ -41,6 +42,8 @@ namespace Idsrv4
 
             app.UseMvc();
 			app.UseIdentityServer();
+			app.UseAuthentication();
+			app.UseMvcWithDefaultRoute();
         }
     }
 }
