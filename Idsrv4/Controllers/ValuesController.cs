@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityServer4.Controllers
+namespace Idsrv4.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller

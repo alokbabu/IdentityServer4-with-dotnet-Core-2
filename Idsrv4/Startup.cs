@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Idsrv4.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace IdentityServer4
+namespace Idsrv4
 {
     public class Startup
     {
@@ -24,6 +25,10 @@ namespace IdentityServer4
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+			services.AddIdentityServer()
+					.AddDeveloperSigningCredential()
+					.AddInMemoryClients(IdentityServerConfig.GetClients())
+					.AddInMemoryApiResources(IdentityServerConfig.GetApiResources());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +40,7 @@ namespace IdentityServer4
             }
 
             app.UseMvc();
+			app.UseIdentityServer();
         }
     }
 }
