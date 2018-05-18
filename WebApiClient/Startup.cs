@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using Idsrv4.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Idsrv4
+namespace WebApiClient
 {
     public class Startup
     {
@@ -25,12 +25,25 @@ namespace Idsrv4
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-			services.AddIdentityServer()
-					.AddDeveloperSigningCredential()
-			        .AddTestUsers(IdentityServerConfig.GetUsers())
-					.AddInMemoryClients(IdentityServerConfig.GetClients())
-					.AddInMemoryApiResources(IdentityServerConfig.GetApiResources())
-			        .AddInMemoryIdentityResources(IdentityServerConfig.GetIdentityResources());
+
+			JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+                .AddCookie("Cookies")
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.SignInScheme = "Cookies";
+
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+
+                    options.ClientId = "client.mvc";
+                    options.SaveTokens = true;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,9 +54,9 @@ namespace Idsrv4
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
-			app.UseIdentityServer();
 			app.UseAuthentication();
+			app.UseStaticFiles();
+            
 			app.UseMvcWithDefaultRoute();
         }
     }
